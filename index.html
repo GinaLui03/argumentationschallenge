@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARGUMENTATIONS-CHALLENGE – Baue die stärkste Argumentation!</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --accent-gold: #f59e0b;
+            --accent-gold-hover: #d97706;
+            --accent-blue: #3b82f6;
+            --accent-blue-hover: #2563eb;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --border-highlight: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* HEADER & TOP BAR */
+        header {
+            background: linear-gradient(135deg, #1e1b4b, #0f172a);
+            padding: 1rem 1.5rem;
+            border-bottom: 3px solid var(--accent-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            background: rgba(245, 158, 11, 0.2);
+            padding: 6px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--accent-gold);
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .player-badge {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid var(--accent-blue);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+            display: none;
+        }
+
+        /* PERSISTENT THESE BAR */
+        .thesis-bar {
+            background: linear-gradient(90deg, #1e293b, #1e1b4b, #1e293b);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.9rem 1.5rem;
+            text-align: center;
+            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .thesis-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .thesis-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+            max-width: 1000px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+
+        /* STATUS BAR / PROGRESS */
+        .status-bar {
+            background: #111827;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .status-pill {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .status-pill span {
+            color: var(--accent-gold);
+            font-weight: 800;
+        }
+
+        /* MAIN CONTAINER */
+        main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* BUTTONS & INPUTS */
+        .btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #475569;
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--accent-gold), #d97706);
+            color: #000;
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
+        }
+
+        .btn-secondary {
+            background: #475569;
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+        }
+
+        .btn-lg {
+            padding: 16px 32px;
+            font-size: 1.25rem;
+            border-radius: 12px;
+        }
+
+        .input-field {
+            background: #0f172a;
+            border: 2px solid var(--border-color);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent-gold);
+        }
+
+        /* CARDS GRID (ROUND 1) */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .arg-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            user-select: none;
+        }
+
+        .arg-card:hover {
+            border-color: var(--border-highlight);
+            transform: translateY(-3px);
+            background: var(--card-hover);
+        }
+
+        .arg-card.selected {
+            border-color: var(--accent-gold);
+            background: linear-gradient(145deg, #1e293b, #283548);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .arg-card-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #f1f5f9;
+        }
+
+        .card-checkbox {
+            align-self: flex-end;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .arg-card.selected .card-checkbox {
+            color: var(--accent-gold);
+        }
+
+        .checkbox-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            background: #0f172a;
+        }
+
+        .arg-card.selected .checkbox-icon {
+            border-color: var(--accent-gold);
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        /* SORTABLE LIST (ROUND 2) */
+        .sortable-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .sortable-item {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            cursor: grab;
+        }
+
+        .sortable-item:active {
+            cursor: grabbing;
+            border-color: var(--accent-gold);
+            background: var(--card-hover);
+        }
+
+        .sortable-rank {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .drag-handle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: grab;
+            padding: 0 4px;
+        }
+
+        .sort-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        /* RULES & INFO CARDS */
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--accent-blue);
+            border-radius: 14px;
+            padding: 1.25rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        .info-box h3 {
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        /* EVALUATION & RESULTS */
+        .score-banner {
+            background: linear-gradient(135deg, #1e1b4b, #0f172a);
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-banner-title {
+            color: var(--text-muted);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .score-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin: 8px 0;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .rank-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-gold), #d97706);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            margin-top: 6px;
+        }
+
+        .results-section {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.5rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .results-section h3 {
+            color: var(--accent-gold);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .eval-card {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .eval-card.selected-true {
+            border-left: 5px solid var(--accent-green);
+        }
+
+        .eval-card.selected-false {
+            border-left: 5px solid var(--border-color);
+            opacity: 0.75;
+        }
+
+        .eval-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-red { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .badge-gold { background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .highlight-box {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .highlight-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--accent-blue);
+        }
+
+        /* CONFETTI CANVAS */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.1rem; }
+            .subtitle { font-size: 0.75rem; }
+            .thesis-text { font-size: 0.9rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .score-number { font-size: 2.8rem; }
+            .status-bar { flex-direction: column; gap: 6px; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon">⚖️</div>
+            <div>
+                <h1>ARGUMENTATIONS-CHALLENGE</h1>
+                <div class="subtitle">Baue die stärkste Argumentation!</div>
+            </div>
+        </div>
+        <div class="player-badge" id="header-player-badge">👤 Spieler: -</div>
+    </header>
+
+    <!-- PERSISTENT THESE BAR -->
+    <div class="thesis-bar" id="thesis-bar">
+        <div class="thesis-title">📌 ÜBERGEORDNETE THESE (Gilt für das gesamte Spiel)</div>
+        <div class="thesis-text">
+            „Jugendliche sollten KI für schulische Aufgaben nutzen dürfen, sofern sie die Ergebnisse kritisch prüfen und ihre eigenen Denkleistungen erbringen.“
+        </div>
+    </div>
+
+    <!-- STATUS BAR / PROGRESS -->
+    <div class="status-bar" id="status-bar">
+        <div class="status-pill">Spieldurchlauf: <span id="status-round">Runde 1 von 2</span></div>
+        <div class="status-pill">Auswahl: <span id="status-selection-count">0 / 6 Argumente</span></div>
+        <div class="status-pill">Max. Punkte: <span>66 Punkte</span></div>
+    </div>
+
+    <!-- MAIN WORKSPACE -->
+    <main>
+
+        <!-- SCREEN 0: START / SETUP -->
+        <section id="screen-start" class="screen active">
+            <div class="info-box">
+                <h3>Willkommen zur Argumentations-Challenge! 🚀</h3>
+                <p>
+                    Du erhältst zwölf Argumente zu einer These über die Nutzung von KI in der Schule. Aber nicht jedes Argument ist wirklich überzeugend!
+                </p>
+                <br>
+                <p>
+                    <b>Deine Aufgabe:</b> Wähle die <b>sechs stärksten Argumente</b> aus und bringe sie anschließend in die <b>richtige Reihenfolge vom stärksten zum schwächsten Argument</b>. Je besser deine Auswahl und je genauer deine Gewichtung, desto mehr Punkte erhältst du (maximal <b>66 Punkte</b>).
+                </p>
+            </div>
+
+            <div class="results-section" style="max-width: 600px; margin: 0 auto; width: 100%;">
+                <h3 style="border:none; text-align:center;">Dein Name</h3>
+                <input type="text" id="player-name-input" class="input-field" placeholder="Gib deinen Namen oder Spitznamen ein..." maxlength="25">
+                <button class="btn btn-gold btn-lg" onclick="app.startGame()" style="margin-top: 10px; width: 100%;">🚀 Spiel starten</button>
+            </div>
+        </section>
+
+        <!-- SCREEN 1: RUNDE 1 - AUSWAHL -->
+        <section id="screen-round1" class="screen">
+            <div class="info-box">
+                <h3>Runde 1: Die Auswahl 🎯</h3>
+                <p>
+                    Dir werden zwölf Argumente präsentiert. Wähle <b>genau 6 Argumente</b> aus, die die übergeordnete These besonders überzeugend stützen. Klicke auf eine Karte, um sie auszuwählen oder abzuwählen.
+                </p>
+            </div>
+
+            <div class="cards-grid" id="round1-cards-grid">
+                <!-- 12 Cards dynamically rendered -->
+            </div>
+
+            <div style="width: 100%; display: flex; justify-content: center; margin-top: 1rem;">
+                <button class="btn btn-gold btn-lg" id="btn-confirm-selection" onclick="app.confirmSelection()" disabled>
+                    🔒 Auswahl bestätigen (6/6 gewählt)
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: RUNDE 2 - GEWICHTUNG -->
+        <section id="screen-round2" class="screen">
+            <div class="info-box">
+                <h3>Runde 2: Die Gewichtung ⚖️</h3>
+                <p>
+                    Du hast deine 6 Argumente gewählt. Sortiere sie nun nach ihrer Überzeugungskraft: 
+                    <b>Platz 1 = Stärkstes Argument</b> ganz oben, <b>Platz 6 = Schwächstes Argument</b> ganz unten.
+                </p>
+                <p style="font-size:0.85rem; color: var(--text-muted); margin-top: 4px;">
+                    💡 Nutze Drag-and-drop oder die Pfeil-Buttons (▲ / ▼), um die Karten in die gewünschte Reihenfolge zu bringen.
+                </p>
+            </div>
+
+            <div class="sortable-list" id="round2-sortable-list">
+                <!-- 6 Selected cards sortable -->
+            </div>
+
+            <div style="width: 100%; display: flex; justify-content: center; margin-top: 1rem;">
+                <button class="btn btn-gold btn-lg" id="btn-confirm-sorting" onclick="app.confirmSorting()">
+                    🏆 Reihenfolge bestätigen & auswerten
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: RESULTS & DIDACTIC EVALUATION -->
+        <section id="screen-results" class="screen">
+            
+            <div class="score-banner">
+                <div class="score-banner-title">Deine Gesamtleistung</div>
+                <div class="score-number" id="res-total-score">0 / 66</div>
+                <div class="rank-badge" id="res-rank-badge">Argumentations-Kenner</div>
+                <p id="res-motivation-text" style="margin-top: 12px; font-weight: 600; color: #cbd5e1;"></p>
+            </div>
+
+            <!-- HIGHLIGHTS / ANALYSIS -->
+            <div class="highlights-grid">
+                <div class="highlight-box">
+                    <div class="highlight-title">🌟 Deine beste Entscheidung</div>
+                    <div id="res-best-choice" style="font-size: 0.95rem; font-weight: 600; color: #fff;">-</div>
+                </div>
+                <div class="highlight-box">
+                    <div class="highlight-title">⚠️ Dein größter Fehlgriff</div>
+                    <div id="res-worst-choice" style="font-size: 0.95rem; font-weight: 600; color: #fff;">-</div>
+                </div>
+                <div class="highlight-box">
+                    <div class="highlight-title">🎯 Dein Trainingsziel</div>
+                    <div id="res-training-goal" style="font-size: 0.95rem; font-weight: 600; color: #fff;">-</div>
+                </div>
+            </div>
+
+            <!-- POINTS BREAKDOWN -->
+            <div class="results-section">
+                <h3>Punkteübersicht im Detail</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; text-align: center;">
+                    <div style="background:#0f172a; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
+                        <div style="color:var(--text-muted); font-size:0.85rem;">Runde 1: Qualität der Auswahl</div>
+                        <div style="font-size:1.6rem; font-weight:bold; color:var(--accent-gold);" id="res-r1-score">0 / 51 Pkt</div>
+                    </div>
+                    <div style="background:#0f172a; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
+                        <div style="color:var(--text-muted); font-size:0.85rem;">Runde 2: Paarvergleiche (Sortierung)</div>
+                        <div style="font-size:1.6rem; font-weight:bold; color:var(--accent-gold);" id="res-r2-score">0 / 15 Pkt</div>
+                    </div>
+                    <div style="background:#0f172a; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);">
+                        <div style="color:var(--text-muted); font-size:0.85rem;">Gesamtergebnis</div>
+                        <div style="font-size:1.6rem; font-weight:bold; color:var(--accent-green);" id="res-percent">0 %</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SORTING COMPARISON -->
+            <div class="results-section">
+                <h3>Deine Sortierung in Runde 2 vs. Perfekte Rangfolge</h3>
+                <p style="font-size:0.9rem; color:var(--text-muted);">
+                    Hier siehst du, wie deine 6 gewählten Argumente im Paarvergleich gewertet wurden. Für jedes Paar, bei dem das stärkere Argument vor dem schwächeren platziert wurde, erhieltest du 1 Punkt (insgesamt 15 Paarvergleiche).
+                </p>
+                <div id="res-sorting-list" style="display:flex; flex-direction:column; gap:8px;">
+                    <!-- Dynamic sorting rendering -->
+                </div>
+            </div>
+
+            <!-- DIDACTIC DEEP DIVE (ALL 12 CARDS) -->
+            <div class="results-section">
+                <h3>Fachliche Auswertung aller 12 Argumente</h3>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px;">
+                    Untersuche die rhethorische Qualität, Vollständigkeit und Argumentationstypen aller 12 vorgelegten Karten:
+                </p>
+                <div id="res-all-cards-list">
+                    <!-- Dynamic rendering of all 12 cards with DIDACTIC details -->
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:15px; margin-top:1rem; width:100%;">
+                <button class="btn btn-gold btn-lg" onclick="app.restartGame()">🔄 Neues Spiel starten</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /**
+         * ARGUMENT CARDS DATABASE WITH HIDDEN QUALITY SCORES (0-11) AND DIDACTIC ANALYSIS
+         */
+        const RAW_ARGUMENT_DATABASE = [
+            {
+                id: 1,
+                qualityScore: 11,
+                text: "Jugendliche sollten KI für schulische Aufgaben nutzen dürfen, wenn sie lernen, deren Antworten kritisch zu prüfen. Denn KI ist bereits Teil des Lernalltags vieler Jugendlicher. Laut JIM-Studie 2025 nutzen 74 % der befragten 12- bis 19-Jährigen KI für Hausaufgaben und zum Lernen. Deshalb sollte Schule den verantwortungsvollen Umgang mit KI vermitteln, statt die Nutzung grundsätzlich auszuschließen.",
+                type: "Faktenargument",
+                completeness: "Vollständige Argumentationskette",
+                explanation: "Stützt sich auf eine überprüfbare statistische Untersuchung (JIM-Studie) und verbindet Behauptung, Begründung und Beleg zu einer überzeugenden Logik."
+            },
+            {
+                id: 2,
+                qualityScore: 10,
+                text: "Jugendliche sollten in der Schule den Umgang mit KI lernen dürfen. Der Bildungsforscher Ulrich Trautwein betont, dass KI im schulischen Lernen eine wichtige Rolle spielen muss. Da KI die zukünftige Arbeits- und Lernwelt prägt, muss Schule die Jugendlichen auf ihren verantwortungsvollen Einsatz vorbereiten. Seine fachliche Einschätzung unterstützt deshalb die Forderung nach einer angeleiteten Nutzung.",
+                type: "Autoritätsargument",
+                completeness: "Vollständige Argumentationskette",
+                explanation: "Beruft sich auf die fachliche Expertise eines anerkannten Bildungsforschers und führt die Begründung schlüssig aus."
+            },
+            {
+                id: 3,
+                qualityScore: 9,
+                text: "KI sollte bei schulischen Aufgaben unter klaren Regeln erlaubt sein. Schule hat den Auftrag, Jugendliche auf eine selbstbestimmte Teilhabe an der Gesellschaft vorzubereiten. Dazu gehört auch, verantwortungsvoll mit neuen digitalen Technologien umgehen zu können. Deshalb sollten Schülerinnen und Schüler lernen, KI sinnvoll zu nutzen, ohne ihre eigene Denkleistung abzugeben.",
+                type: "Normatives Argument",
+                completeness: "Vollständige Argumentationskette",
+                explanation: "Stützt sich auf allgemein anerkannte Bildungs- und Gesellschaftswerte (selbstbestimmte Teilhabe) mit klarer Schlussfolgerung."
+            },
+            {
+                id: 4,
+                qualityScore: 8,
+                text: "Jugendliche sollten KI unter Anleitung für schulische Aufgaben nutzen dürfen. KI-Anwendungen können unterschiedliche Erklärungen und Beispiele zu einem Thema liefern. Beispielsweise kann sich ein Schüler bei einer Mathematikaufgabe einen Lösungsweg in kleinere Schritte aufteilen lassen und diese anschließend mit dem Schulbuch vergleichen. Dadurch kann KI eine zusätzliche Lernhilfe sein.",
+                type: "Faktenargument",
+                completeness: "Vollständige Argumentationskette",
+                explanation: "Liefert ein anschauliches und nachvollziehbares Praxisbeispiel (Matheaufgabe) als Beleg für die unterstützende Funktion."
+            },
+            {
+                id: 5,
+                qualityScore: 7,
+                text: "Der Bildungsforscher Ulrich Trautwein spricht sich dafür aus, KI in Schulen und im Unterricht zu berücksichtigen. Deshalb sollte die Nutzung von KI auch bei Hausaufgaben grundsätzlich erlaubt sein.",
+                type: "Autoritätsargument",
+                completeness: "Unvollständige Argumentationskette",
+                explanation: "Zwar wird eine reale Autorität genannt, aber die detaillierte Begründung und der konkrete Zusammenhang bleiben unvollständig."
+            },
+            {
+                id: 6,
+                qualityScore: 6,
+                text: "Jugendliche sollten das Recht haben, neue Technologien kennenzulernen. Dazu gehört auch Künstliche Intelligenz. Deshalb sollte KI bei schulischen Aufgaben erlaubt sein.",
+                type: "Normatives Argument",
+                completeness: "Unvollständige Argumentationskette",
+                explanation: "Spricht einen verständlichen Wert an, führt die argumentative Begründung jedoch nur oberflächlich aus."
+            },
+            {
+                id: 7,
+                qualityScore: 5,
+                text: "KI macht Hausaufgaben immer schneller und fehlerfrei. Deshalb sollten Jugendliche sie bei allen schulischen Aufgaben einsetzen.",
+                type: "Faktenanschein",
+                completeness: "Problematische Formulierung",
+                explanation: "Arbeitet mit einer pauschalen und unbelegten Behauptung ('immer fehlerfrei'), die sachlich nicht zutrifft."
+            },
+            {
+                id: 8,
+                qualityScore: 4,
+                text: "Mein Lieblingsinfluencer sagt, dass ChatGPT immer richtig liegt. Deshalb sollte jeder Jugendliche KI für Hausaufgaben benutzen.",
+                type: "Schein-Autoritätsargument",
+                completeness: "Fehlende Glaubwürdigkeit",
+                explanation: "Ein Influencer besitzt keine nachgewiesene fachliche Expertise in Pädagogik oder KI-Forschung."
+            },
+            {
+                id: 9,
+                qualityScore: 3,
+                text: "Fast alle in meiner Klasse nutzen ChatGPT. Also muss es für Hausaufgaben richtig und sinnvoll sein!",
+                type: "Argumentum ad populum",
+                completeness: "Fehlerhafte Begründung",
+                explanation: "Begründet eine Position bloß damit, dass viele Menschen etwas tun – das ist kein sachlicher Beweis für die Richtigkeit."
+            },
+            {
+                id: 10,
+                qualityScore: 2,
+                text: "Bitte erlaubt KI für alle Hausaufgaben. Sonst muss ich stundenlang arbeiten und habe doch schon so viel Stress!",
+                type: "Argumentum ad misericordiam",
+                completeness: "Mitleids-Appell",
+                explanation: "Versucht durch Erzeugen von Mitleid zu überzeugen, anstatt sachliche Argumente für den Lernerfolg zu liefern."
+            },
+            {
+                id: 11,
+                qualityScore: 1,
+                text: "Wenn du KI nicht für deine Hausaufgaben nutzt, wirst du in der Schule bald abgehängt. Also solltest du sie unbedingt verwenden!",
+                type: "Argumentum ad baculum",
+                completeness: "Druck / Drohung",
+                explanation: "Erzeugt Angst vor Nachteilen und setzt den Gegenüber unter Druck, statt inhaltlich zu begründen."
+            },
+            {
+                id: 12,
+                qualityScore: 0,
+                text: "Wer KI in der Schule verbieten möchte, ist einfach altmodisch und hat keine Ahnung von der Zukunft!",
+                type: "Argumentum ad hominem",
+                completeness: "Persönlicher Angriff",
+                explanation: "Statt die Position in der Sache zu prüfen, wird die Person mit abweichender Meinung persönlich abgewertet."
+            }
+        ];
+
+        /**
+         * GAME LOGIC ENGINE
+         */
+        class ArgumentChallengeApp {
+            constructor() {
+                this.playerName = "";
+                this.shuffledCards = [];
+                this.selectedCardIds = [];
+                this.sortedCards = [];
+                this.draggedItemIndex = null;
+            }
+
+            init() {
+                // Attach ENTER key event to player name input
+                document.getElementById('player-name-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.startGame();
+                });
+            }
+
+            // Shuffle cards array for Round 1
+            shuffleCards() {
+                this.shuffledCards = JSON.parse(JSON.stringify(RAW_ARGUMENT_DATABASE));
+                for (let i = this.shuffledCards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.shuffledCards[i], this.shuffledCards[j]] = [this.shuffledCards[j], this.shuffledCards[i]];
+                }
+            }
+
+            showScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(`screen-${screenId}`).classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            startGame() {
+                const nameInput = document.getElementById('player-name-input').value.trim();
+                this.playerName = nameInput || "Schülerin / Schüler";
+                
+                document.getElementById('header-player-badge').innerText = `👤 Spieler: ${this.playerName}`;
+                document.getElementById('header-player-badge').style.display = 'block';
+                document.getElementById('thesis-bar').style.display = 'block';
+                document.getElementById('status-bar').style.display = 'flex';
+
+                this.shuffleCards();
+                this.selectedCardIds = [];
+                
+                this.startRound1();
+            }
+
+            /* --- RUNDE 1: SELECTION --- */
+
+            startRound1() {
+                this.showScreen('round1');
+                document.getElementById('status-round').innerText = "Runde 1 von 2";
+                this.updateSelectionStatus();
+                this.renderRound1Cards();
+            }
+
+            renderRound1Cards() {
+                const grid = document.getElementById('round1-cards-grid');
+                grid.innerHTML = '';
+
+                this.shuffledCards.forEach(card => {
+                    const isSelected = this.selectedCardIds.includes(card.id);
+                    const cardEl = document.createElement('div');
+                    cardEl.className = `arg-card ${isSelected ? 'selected' : ''}`;
+                    cardEl.onclick = () => this.toggleCardSelection(card.id);
+
+                    cardEl.innerHTML = `
+                        <div class="arg-card-text">"${card.text}"</div>
+                        <div class="card-checkbox">
+                            <div class="checkbox-icon">${isSelected ? '✓' : ''}</div>
+                            <span>${isSelected ? 'Ausgewählt' : 'Karte wählen'}</span>
+                        </div>
+                    `;
+                    grid.appendChild(cardEl);
+                });
+            }
+
+            toggleCardSelection(cardId) {
+                const index = this.selectedCardIds.indexOf(cardId);
+
+                if (index > -1) {
+                    // Deselect
+                    this.selectedCardIds.splice(index, 1);
+                } else {
+                    // Select (Max 6)
+                    if (this.selectedCardIds.length >= 6) {
+                        alert("Du hast bereits 6 Argumente ausgewählt! Wähle eine Karte ab, um eine andere zu wählen.");
+                        return;
+                    }
+                    this.selectedCardIds.push(cardId);
+                }
+
+                this.updateSelectionStatus();
+                this.renderRound1Cards();
+            }
+
+            updateSelectionStatus() {
+                const count = this.selectedCardIds.length;
+                document.getElementById('status-selection-count').innerText = `${count} / 6 Argumente`;
+                
+                const btnConfirm = document.getElementById('btn-confirm-selection');
+                if (count === 6) {
+                    btnConfirm.disabled = false;
+                    btnConfirm.innerText = "🔒 Auswahl bestätigen (6/6 gewählt) ➡️";
+                    btnConfirm.classList.add('btn-gold');
+                } else {
+                    btnConfirm.disabled = true;
+                    btnConfirm.innerText = `🔒 Bitte genau 6 Argumente wählen (${count}/6)`;
+                    btnConfirm.classList.remove('btn-gold');
+                }
+            }
+
+            confirmSelection() {
+                if (this.selectedCardIds.length !== 6) return;
+
+                // Prepare selected cards for Round 2
+                this.sortedCards = this.selectedCardIds.map(id => {
+                    return RAW_ARGUMENT_DATABASE.find(c => c.id === id);
+                });
+
+                this.startRound2();
+            }
+
+            /* --- RUNDE 2: WEIGHTING / SORTING --- */
+
+            startRound2() {
+                this.showScreen('round2');
+                document.getElementById('status-round').innerText = "Runde 2 von 2";
+                this.renderRound2List();
+            }
+
+            renderRound2List() {
+                const container = document.getElementById('round2-sortable-list');
+                container.innerHTML = '';
+
+                this.sortedCards.forEach((card, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'sortable-item';
+                    item.draggable = true;
+                    item.dataset.index = index;
+
+                    // HTML Drag and Drop Events
+                    item.addEventListener('dragstart', (e) => this.handleDragStart(e, index));
+                    item.addEventListener('dragover', (e) => this.handleDragOver(e));
+                    item.addEventListener('drop', (e) => this.handleDrop(e, index));
+
+                    item.innerHTML = `
+                        <div class="drag-handle">☰</div>
+                        <div class="sortable-rank">#${index + 1}</div>
+                        <div style="flex:1; font-size: 0.95rem; line-height: 1.4;">"${card.text}"</div>
+                        <div class="sort-controls">
+                            <button class="btn btn-secondary btn-sm" onclick="app.moveCard(${index}, -1)" ${index === 0 ? 'disabled' : ''}>▲ Nach oben</button>
+                            <button class="btn btn-secondary btn-sm" onclick="app.moveCard(${index}, 1)" ${index === 5 ? 'disabled' : ''}>▼ Nach unten</button>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            moveCard(index, direction) {
+                const targetIndex = index + direction;
+                if (targetIndex >= 0 && targetIndex < this.sortedCards.length) {
+                    [this.sortedCards[index], this.sortedCards[targetIndex]] = [this.sortedCards[targetIndex], this.sortedCards[index]];
+                    this.renderRound2List();
+                }
+            }
+
+            handleDragStart(e, index) {
+                this.draggedItemIndex = index;
+                e.dataTransfer.effectAllowed = 'move';
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            }
+
+            handleDrop(e, targetIndex) {
+                e.preventDefault();
+                if (this.draggedItemIndex !== null && this.draggedItemIndex !== targetIndex) {
+                    const draggedCard = this.sortedCards[this.draggedItemIndex];
+                    this.sortedCards.splice(this.draggedItemIndex, 1);
+                    this.sortedCards.splice(targetIndex, 0, draggedCard);
+                    this.renderRound2List();
+                }
+                this.draggedItemIndex = null;
+            }
+
+            confirmSorting() {
+                this.calculateResults();
+            }
+
+            /* --- EVALUATION & PAIRWISE COMPARISON --- */
+
+            calculateResults() {
+                // 1. Calculate Round 1 Score (Quality of Selection)
+                let round1Score = 0;
+                this.selectedCardIds.forEach(id => {
+                    const card = RAW_ARGUMENT_DATABASE.find(c => c.id === id);
+                    round1Score += card.qualityScore;
+                });
+
+                // 2. Calculate Round 2 Score (Pairwise Comparison of 15 pairs)
+                // 6 cards -> N*(N-1)/2 = 15 pairs
+                let round2Score = 0;
+                for (let i = 0; i < this.sortedCards.length; i++) {
+                    for (let j = i + 1; j < this.sortedCards.length; j++) {
+                        const cardA = this.sortedCards[i]; // Placed earlier (assumed stronger)
+                        const cardB = this.sortedCards[j]; // Placed later (assumed weaker)
+
+                        // 1 Point if higher quality score is placed before lower quality score
+                        if (cardA.qualityScore > cardB.qualityScore) {
+                            round2Score++;
+                        }
+                    }
+                }
+
+                const totalScore = round1Score + round2Score;
+                const percentage = Math.round((totalScore / 66) * 100);
+
+                // Determine Rank Level
+                let rankTitle = "";
+                let motivation = "";
+
+                if (totalScore >= 60) {
+                    rankTitle = "👑 Argumentations-Champion";
+                    motivation = "Hervorragend! Du hast ein exzellentes Gespür für fachliche Argumentation, rhetorische Qualität und Logik gezeigt.";
+                } else if (totalScore >= 50) {
+                    rankTitle = "🥇 Argumentations-Meister";
+                    motivation = "Großartige Leistung! Du erkennst starke Argumente zuverlässig und kannst sie präzise gewichten.";
+                } else if (totalScore >= 35) {
+                    rankTitle = "🥈 Argumentations-Profi";
+                    motivation = "Gute Arbeit! Du hast die wesentlichen Qualitätsunterschiede verstanden. Mit etwas Übung wirst du zum Meister!";
+                } else if (totalScore >= 20) {
+                    rankTitle = "🥉 Argumentations-Kenner";
+                    motivation = "Ein solides Ergebnis! Du erkennst bereits einige Scheinargumente, lässt dich manchmal aber noch von Schein-Autoritäten verführen.";
+                } else {
+                    rankTitle = "🌱 Argumentations-Anfänger";
+                    motivation = "Kein Problem, Übung macht den Meister! Schau dir die Auswertung unten genau an, um typische Scheinargumente besser zu durchschauen.";
+                }
+
+                // Analyze Highlights: Best choice, worst choice, training goal
+                const selectedObjs = this.selectedCardIds.map(id => RAW_ARGUMENT_DATABASE.find(c => c.id === id));
+                selectedObjs.sort((a, b) => b.qualityScore - a.qualityScore);
+
+                const bestChoice = selectedObjs[0];
+                const worstChoice = selectedObjs[selectedObjs.length - 1];
+
+                let trainingGoal = "";
+                const r1Ratio = round1Score / 51;
+                const r2Ratio = round2Score / 15;
+
+                if (r1Ratio < r2Ratio) {
+                    trainingGoal = "Fokus auf die Auswahl: Achte noch stärker darauf, Scheinargumente (z.B. ad populum oder ad hominem) von echten Belegen zu unterscheiden.";
+                } else {
+                    trainingGoal = "Fokus auf die Gewichtung: Achte bei der Sortierung darauf, vollständige Fakten- und Autoritätsargumente ganz nach oben zu stellen.";
+                }
+
+                // Render Results View
+                document.getElementById('res-total-score').innerText = `${totalScore} / 66`;
+                document.getElementById('res-rank-badge').innerText = rankTitle;
+                document.getElementById('res-motivation-text').innerText = motivation;
+                document.getElementById('res-r1-score').innerText = `${round1Score} / 51 Pkt`;
+                document.getElementById('res-r2-score').innerText = `${round2Score} / 15 Pkt`;
+                document.getElementById('res-percent').innerText = `${percentage} %`;
+
+                document.getElementById('res-best-choice').innerText = `Karte #${bestChoice.id} (${bestChoice.type}) mit ${bestChoice.qualityScore} von 11 Punkten.`;
+                document.getElementById('res-worst-choice').innerText = `Karte #${worstChoice.id} (${worstChoice.type}) mit nur ${worstChoice.qualityScore} von 11 Punkten.`;
+                document.getElementById('res-training-goal').innerText = trainingGoal;
+
+                this.renderResultsSortingList();
+                this.renderResultsAllCards();
+
+                this.showScreen('results');
+
+                if (totalScore >= 50) {
+                    this.triggerConfetti();
+                }
+            }
+
+            renderResultsSortingList() {
+                const container = document.getElementById('res-sorting-list');
+                container.innerHTML = '';
+
+                // Create perfect sorted order of chosen cards for comparison
+                const perfectOrder = [...this.sortedCards].sort((a, b) => b.qualityScore - a.qualityScore);
+
+                this.sortedCards.forEach((card, idx) => {
+                    const isPerfectPlace = (perfectOrder[idx].id === card.id);
+                    const item = document.createElement('div');
+                    item.className = 'eval-card';
+                    item.style.borderLeft = isPerfectPlace ? '5px solid var(--accent-green)' : '5px solid var(--accent-gold)';
+
+                    item.innerHTML = `
+                        <div class="eval-header">
+                            <span>Dein Platz #${idx + 1} (Karte #${card.id})</span>
+                            <span class="badge ${isPerfectPlace ? 'badge-green' : 'badge-gold'}">
+                                ${card.qualityScore} Qualitätspunkte | ${card.type}
+                            </span>
+                        </div>
+                        <div style="font-size:0.95rem; margin: 4px 0;">"${card.text}"</div>
+                        <div style="font-size:0.85rem; color:var(--text-muted);">
+                            ${isPerfectPlace ? '✅ Optimal gewichtet!' : '💡 Perfekter Rang laut Qualität wäre Platz #' + (perfectOrder.findIndex(p => p.id === card.id) + 1)}
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            renderResultsAllCards() {
+                const container = document.getElementById('res-all-cards-list');
+                container.innerHTML = '';
+
+                // Sort all 12 cards by internal quality score descending
+                const sortedAll = [...RAW_ARGUMENT_DATABASE].sort((a, b) => b.qualityScore - a.qualityScore);
+
+                sortedAll.forEach((card, idx) => {
+                    const isSelected = this.selectedCardIds.includes(card.id);
+                    const item = document.createElement('div');
+                    item.className = `eval-card ${isSelected ? 'selected-true' : 'selected-false'}`;
+
+                    item.innerHTML = `
+                        <div class="eval-header">
+                            <span>Rang #${idx + 1} (Karte #${card.id}) - ${card.qualityScore} Qualitätspunkte</span>
+                            <span class="badge ${isSelected ? 'badge-green' : 'badge-red'}">
+                                ${isSelected ? 'Von dir gewählt ✓' : 'Nicht gewählt'}
+                            </span>
+                        </div>
+                        <div style="font-size:0.95rem; font-weight:600; margin: 4px 0;">"${card.text}"</div>
+                        <div style="font-size:0.85rem; color: var(--accent-gold); display:flex; gap:10px; flex-wrap:wrap;">
+                            <span><b>Typ:</b> ${card.type}</span>
+                            <span>•</span>
+                            <span><b>Struktur:</b> ${card.completeness}</span>
+                        </div>
+                        <div style="font-size:0.85rem; color: #cbd5e1; margin-top:4px;">
+                            <b>Fachliche Einordnung:</b> ${card.explanation}
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            restartGame() {
+                document.getElementById('header-player-badge').style.display = 'none';
+                document.getElementById('thesis-bar').style.display = 'none';
+                document.getElementById('status-bar').style.display = 'none';
+                document.getElementById('player-name-input').value = '';
+                this.showScreen('start');
+            }
+
+            triggerConfetti() {
+                const canvas = document.getElementById('confetti-canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                const pieces = [];
+                const colors = ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#ec4899', '#8b5cf6'];
+
+                for (let i = 0; i < 150; i++) {
+                    pieces.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height - canvas.height,
+                        size: Math.random() * 10 + 5,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        speed: Math.random() * 5 + 2,
+                        angle: Math.random() * 360
+                    });
+                }
+
+                function draw() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    pieces.forEach(p => {
+                        p.y += p.speed;
+                        p.angle += 2;
+                        ctx.fillStyle = p.color;
+                        ctx.fillRect(p.x, p.y, p.size, p.size);
+                    });
+
+                    if (pieces.some(p => p.y < canvas.height)) {
+                        requestAnimationFrame(draw);
+                    } else {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    }
+                }
+                draw();
+            }
+        }
+
+        // Initialize App on load
+        let app;
+        window.onload = () => {
+            app = new ArgumentChallengeApp();
+            app.init();
+        };
+    </script>
+</body>
+</html>
